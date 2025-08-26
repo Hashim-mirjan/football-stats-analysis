@@ -8,7 +8,8 @@ An interactive Streamlit app for exploring player performance using scatter plot
 
 <img width="600" height="265" alt="Screenshot 2025-08-26 193214" src="https://github.com/user-attachments/assets/94cbdfc6-1cad-4976-814c-0069b00adfe6" />  <img width="600" height="265" alt="Screenshot 2025-08-26 193258" src="https://github.com/user-attachments/assets/658e962a-8eb5-4947-beef-0fcb061933f8" />
 
-<img width="600" height="265" alt="Screenshot 2025-08-26 193336" src="https://github.com/user-attachments/assets/8bfe8d77-e6df-44c3-b203-ac918ad5c3a7" />
+<img width="600" height="265" alt="Screenshot 2025-08-26 203541" src="https://github.com/user-attachments/assets/9873268e-75c5-4212-875d-3c29ac0308d4" />
+
 
 ## Features
 - **Filters:** minutes threshold, position, team, player search (typeahead). To narrow search down for player selection.
