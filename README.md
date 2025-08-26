@@ -32,14 +32,16 @@ Metrics shown:
 - Goals in last 5: used in comparisons when available (shows “not enough data” if <5 matches)
 
 ## How to run
-### Install Dependencies
-- Make sure you have Python installed (preferably 3.8+), then install the required packages using:
 
+```bash
+# 1) Clone the repo
+git clone https://github.com/Hashim-mirjan/football-stats-analysis.git
+cd football-stats-analysis
+
+# 2) Install dependencies
 pip install -r requirements.txt
 
-### Run the Streamlit Demo
-- To launch the interactive prediction demo:
-
-streamlit run Prediction_demo.py
+# 3) Run the app (from the repo folder)
+streamlit run Players_Dashboard.py
 
 This will open a web app dashboard in your browser. The home page is the main dashbaord. Open the sidebar on the left to access the filters and the player comparison page.  
