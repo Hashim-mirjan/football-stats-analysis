@@ -83,8 +83,3 @@ def fetch_team_match_data(team_name, season='2024'):
     match_data.rename(columns={"datetime": "date"}, inplace=True)
     
     return match_data
-
-
-
-
-
