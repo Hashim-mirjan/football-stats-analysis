@@ -60,7 +60,7 @@ def get_player_id(leaguedata, player_name):
         return None
 
 def fetch_player_shot_data(player_id):
-    client = ustat.UnderstatClient()
+    client = get_client()
     player = client.player(player_id)
     shot_data = player.get_shot_data()
     shot_data = pd.DataFrame(shot_data)
@@ -75,6 +75,15 @@ def fetch_player_shot_data(player_id):
         shot_data["date"] = pd.to_datetime(shot_data["date"], errors="coerce")
     
     return shot_data
+
+def fetch_team_match_data(team_name, season='2024'):
+    client = get_client()
+    match_data = client.team(team_name).get_match_data(season=season)
+    match_data = pd.DataFrame(match_data)
+    match_data.rename(columns={"datetime": "date"}, inplace=True)
+    
+    return match_data
+
 
 
 
