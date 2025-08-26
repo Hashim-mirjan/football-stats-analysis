@@ -30,27 +30,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-st.markdown(
-    """
-    <style>
-    /* Make all widget labels white */
-    .stSlider label, .stMultiSelect label {
-        color: rgba(255, 255, 255, 0.5) !important;
-    }
-
-    /* Also adjust general label text in case of other widgets */
-    .stSelectbox label, .stDateInput label {
-        color: rgba(255, 255, 255, 1) !important;
-    }
-
-    /* If you want the options text inside multiselect to be white too */
-    .stMultiSelect div[data-baseweb="select"] span {
-        color: rgba(255, 255, 255, 1) !important;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
 # --- Data loading --------------------------------------------
 
 from src.Data import fetch_data
@@ -161,17 +140,18 @@ with left_col:
 
 def top10_bar(df, metric="xG_diff", title="Top 10 Players by xG per 90"):
     # Plot horizontal bar chart
-    top10 = df.sort_values(by=metric, ascending=False).head(10)
-    bottom10 = df.sort_values(by=metric, ascending=True).head(10)
+    num_players = len(df)
+    top10 = df.sort_values(by=metric, ascending=False).head(min(10,num_players//2 + num_players%2))
+    bottom10 = df.sort_values(by=metric, ascending=True).head(min(10,num_players//2))
     bottom10 = bottom10.iloc[::-1]
     top10andbottom10 = pd.concat([top10, bottom10])
     top10andbottom10["xG_diff"] = top10andbottom10["xG_diff"].round(1)
 
     fig = px.bar(
         top10andbottom10,  
-        x=metric,                  # metric on the x-axis (bar length)
-        y="player_name",           # player names on y-axis (LHS)
-        orientation="h",           # horizontal bars
+        x=metric,                  
+        y="player_name",           
+        orientation="h",           
         text=metric,               
         title=title,
         height=850
