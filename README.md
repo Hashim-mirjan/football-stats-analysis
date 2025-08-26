@@ -33,15 +33,22 @@ Metrics shown:
 
 ## How to run
 
+
+### 1) Clone the repo
 ```bash
-# 1) Clone the repo
 git clone https://github.com/Hashim-mirjan/football-stats-analysis.git
 cd football-stats-analysis
-
-# 2) Install dependencies
+```
+### 2) Install dependencies
+```bash
 pip install -r requirements.txt
-
-# 3) Run the app (from the repo folder)
+```
+### 3) Run the app (from the repo folder)
+```bash
 streamlit run Players_Dashboard.py
+```
+This will open a web app dashboard in your browser. The home page is the main dashbaord. Open the sidebar on the left to access the filters and the player comparison page.
 
-This will open a web app dashboard in your browser. The home page is the main dashbaord. Open the sidebar on the left to access the filters and the player comparison page.  
+### Troubleshooting
+ModuleNotFoundError (e.g., No module named 'src'):
+Make sure you ran streamlit run app.py from the repo folder (after cd <REPO_NAME>).
