@@ -62,7 +62,7 @@ st.markdown(
 
 st.title("Player Comparison")
 
-from src.Data import fetch_data, get_player_id, fetch_player_shot_data, fetch_team_match_data
+from src.data import fetch_data, get_player_id, fetch_player_shot_data, fetch_team_match_data
 
 leaguedata = fetch_data(2024)
 leaguedata = leaguedata.loc[leaguedata["main_position"] != "Goalkeeper"].copy()
@@ -303,6 +303,7 @@ with col_radar:
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.info("Select two players to compare.")
+
 
 
 
