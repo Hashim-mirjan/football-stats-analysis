@@ -304,6 +304,3 @@ with col_radar:
     else:
         st.info("Select two players to compare.")
 
-
-
-
