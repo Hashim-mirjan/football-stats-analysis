@@ -32,7 +32,7 @@ st.markdown(
 
 # --- Data loading --------------------------------------------
 
-from src.Data import fetch_data
+from src.data import fetch_data
 
 leaguedata = fetch_data(2024)
 
@@ -189,6 +189,7 @@ fig_xgoverperformers = top10_bar(df, metric="xG_diff", title="xG Over and Under 
 
 with right_col:
     st.plotly_chart(fig_xgoverperformers, use_container_width=True)
+
 
 
 
