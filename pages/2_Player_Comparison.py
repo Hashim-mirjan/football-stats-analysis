@@ -182,7 +182,7 @@ if player1 and player2:
     player1KPI["Assists"] = [player1stats["assists"].values[0]]
     player1KPI["xG"] =[round(player1stats["xG"].values[0],2)]
     player1KPI["xA"] = [round(player1stats["xA"].values[0],2)]
-    player1KPI["Goals Last 5 Apps"] = [player1last5] if player1last5 is not np.nan else ["N/A"]
+    player1KPI["Goals Last 5 Games"] = [player1last5] if player1last5 is not np.nan else ["N/A"]
     player1KPI["Minutes Played"] = [player1stats["time"].values[0]]
     player1KPI["xG/90"] = [round(player1stats["xG_per90"].values[0],2)]
     player1KPI["xA/90"] = [round(player1stats["xA_per90"].values[0],2)]
@@ -194,7 +194,7 @@ if player1 and player2:
     player2KPI["Assists"] = [player2stats["assists"].values[0]]     
     player2KPI["xG"] = [round(player2stats["xG"].values[0],2)]
     player2KPI["xA"] = [round(player2stats["xA"].values[0],2)]
-    player2KPI["Goals Last 5 Apps"] = [player2last5] if player2last5 is not np.nan else ["N/A"]
+    player2KPI["Goals Last 5 Games"] = [player2last5] if player2last5 is not np.nan else ["N/A"]
     player2KPI["Minutes Played"] = [player2stats["time"].values[0]]
     player2KPI["xG/90"] = [round(player2stats["xG_per90"].values[0],2)]
     player2KPI["xA/90"] = [round(player2stats["xA_per90"].values[0],2)]
@@ -303,4 +303,5 @@ with col_radar:
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.info("Select two players to compare.")
+
 
