@@ -52,3 +52,6 @@ This will open a web app dashboard in your browser. The home page is the main da
 ### Troubleshooting
 ModuleNotFoundError (e.g., No module named 'src'):
 Make sure you ran streamlit run app.py from the repo folder (after cd <REPO_NAME>).
+
+AttributeError: 'Options' object has no attribute 'set_headless':
+Make sure you are have selenium v3 installed, as shown in requirements.
