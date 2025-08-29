@@ -3,3 +3,4 @@ pandas
 plotly
 streamlit
 understatapi
+selenium==3.141.0
