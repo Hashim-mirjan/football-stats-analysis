@@ -2,7 +2,7 @@
 
 An interactive Streamlit app for exploring player performance using scatter plots, filters, and a two-player comparison (radar + KPI table). Scatter points are currently colored by position.
 
-> **Season notice:** The dashboard currently now shows data for the current **2025/26** season as well as the previous **2024/25** season.
+> **Season notice:** The dashboard now shows data for the current **2025/26** season as well as the previous **2024/25** season.
 
 ## Preview
 
