@@ -34,12 +34,19 @@ st.markdown(
 
 from src.data import fetch_data
 
-leaguedata = fetch_data(2024)
+@st.cache_data(show_spinner=False)
+def load_league_data(year):
+    return fetch_data(year)
 
 # ---------------- Sidebar (filters) -----------------------------
 
 with st.sidebar:
     st.header("Filters")
+    
+    # Selecting which season
+    season_year = st.radio("Season", ["2024", "2025"], index=1)
+    leaguedata = load_league_data(season_year)
+    
     t_min = int(np.nanmin(leaguedata["time"])) if leaguedata["time"].notna().any() else 0
     t_max = int(np.nanmax(leaguedata["time"])) if leaguedata["time"].notna().any() else 3000
     # Default = 60% of max minutes
@@ -189,6 +196,7 @@ fig_xgoverperformers = top10_bar(df, metric="xG_diff", title="xG Over and Under 
 
 with right_col:
     st.plotly_chart(fig_xgoverperformers, use_container_width=True)
+
 
 
 
