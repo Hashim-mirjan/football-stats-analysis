@@ -83,6 +83,10 @@ def goals_last_5(player_shots: pd.DataFrame,
         raise ValueError("team_matches must have columns: 'id' and 'date'")
 
     tm['date'] = pd.to_datetime(tm['date'], errors='coerce')
+
+    if "forecast" in tm.columns:
+        tm = tm[tm["forecast"].notna()].copy()
+                     
     last5_ids = (
         tm.sort_values('date', ascending=False)
           .drop_duplicates(subset='id', keep='first')
@@ -303,5 +307,6 @@ with col_radar:
         st.plotly_chart(fig, use_container_width=True)
     else:
         st.info("Select two players to compare.")
+
 
 
