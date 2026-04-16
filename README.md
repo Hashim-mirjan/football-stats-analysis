@@ -1,6 +1,8 @@
-# Premier League Player Dashboard
+# Premier League Player Analysis
 
 An interactive Streamlit app for exploring player performance using scatter plots, filters, and a two-player comparison (radar + KPI table). Scatter points are currently colored by position.
+
+This tool and alaysis is very useful for comparing players and discovering undervalued/underperforming players.
 
 > **Season notice:** The dashboard now shows data for the current **2025/26** season as well as the previous **2024/25** season.
 
