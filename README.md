@@ -4,6 +4,8 @@ An interactive Streamlit app for exploring player performance using scatter plot
 
 This tool and alaysis is very useful for comparing players and discovering undervalued/underperforming players.
 
+Player, Match and Shots data were collected separately via the Understat API, then cleaned and mapped to create a useful dataset.
+
 > **Season notice:** The dashboard now shows data for the current **2025/26** season as well as the previous **2024/25** season.
 
 ## Preview
