@@ -11,10 +11,10 @@ Player, Match and Shots data were collected separately via the Understat API, th
 ## Preview
 
 <img width="600" height="265" alt="Screenshot 2025-08-26 193214" src="https://github.com/user-attachments/assets/94cbdfc6-1cad-4976-814c-0069b00adfe6" />  
-
+<br>
 
 <img width="600" height="265" alt="Screenshot 2025-08-26 193258" src="https://github.com/user-attachments/assets/658e962a-8eb5-4947-beef-0fcb061933f8" />
-
+<br>
 
 <img width="600" height="265" alt="Screenshot 2025-08-26 203541" src="https://github.com/user-attachments/assets/9873268e-75c5-4212-875d-3c29ac0308d4" />
 
