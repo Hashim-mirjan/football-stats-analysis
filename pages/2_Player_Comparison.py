@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 import plotly.graph_objects as go
+import plotly.express as px
 
 from src.data import fetch_data, get_player_id, fetch_player_shot_data, fetch_team_match_data
 
@@ -123,6 +124,14 @@ st.markdown(
             border: 1px solid rgba(159,180,255,0.28);
             border-radius: 5px;
         }
+
+        html, body, [class*="css"]  {
+        color: rgba(255,255,255,0.9) !important;
+        }
+
+        p, span, label, div {
+            color: rgba(255,255,255,0.9) !important;
+        }
     </style>
     """,
     unsafe_allow_html=True,
@@ -223,6 +232,7 @@ def build_player_context(player_name: str):
         "team": team,
         "stats": stats,
         "last5": last5,
+        "shots" : shots,
     }
 
 
@@ -239,6 +249,136 @@ def player_kpi(ctx: dict) -> pd.DataFrame:
         "xG/90": [round(stats["xG_per90"].values[0], 2)],
         "xA/90": [round(stats["xA_per90"].values[0], 2)],
     })
+
+
+def create_shot_map(shots: pd.DataFrame, time_window: str = "All time"):
+    if shots.empty:
+        return None
+
+    pitch_length = 95
+    pitch_width = 60
+
+    shots = shots.copy()
+    shots["date"] = pd.to_datetime(shots["date"], errors="coerce")
+
+    if time_window == "Last 6 months":
+        cutoff_date = pd.Timestamp.today() - pd.DateOffset(months=6)
+        shots = shots[shots["date"] >= cutoff_date].copy()
+
+    elif time_window == "Last 12 months":
+        cutoff_date = pd.Timestamp.today() - pd.DateOffset(months=12)
+        shots = shots[shots["date"] >= cutoff_date].copy()
+
+    if shots.empty:
+        return None
+
+    shots["open/set play"] = np.where(
+        shots["situation"].isin(["DirectFreekick", "Penalty"]),
+        "set-piece",
+        "open-play"
+    )
+
+    shotsmap = shots.copy()
+    shotsmap["x"] = shotsmap["X"] * pitch_length
+    shotsmap["y"] = pitch_width - shotsmap["Y"] * pitch_width
+
+    fig = px.scatter(
+        shotsmap,
+        x="y",
+        y="x",
+        size="xG",
+        size_max=10,
+        hover_data=["xG", "shotType", "id", "minute", "date"],
+        title=f"{shotsmap['player'].iloc[0]} Shot Map"
+    )
+
+    fig.update_xaxes(range=[0, 60])
+    fig.update_yaxes(range=[60, 95], scaleanchor="x", scaleratio=1)
+
+    box_depth = 16.5
+    box_width = 40.3
+    box_left = (pitch_width - box_width) / 2
+    box_right = (pitch_width + box_width) / 2
+
+    fig.add_shape(
+        type="rect",
+        x0=box_left,
+        x1=box_right,
+        y0=pitch_length - box_depth,
+        y1=pitch_length,
+        line=dict(color="white", width=2)
+    )
+
+    six_yard_depth = 5.5
+    six_yard_width = 18.3
+    six_left = (pitch_width - six_yard_width) / 2
+    six_right = (pitch_width + six_yard_width) / 2
+
+    fig.add_shape(
+        type="rect",
+        x0=six_left,
+        x1=six_right,
+        y0=pitch_length - six_yard_depth,
+        y1=pitch_length,
+        line=dict(color="white", width=2)
+    )
+
+    penalty_spot_x = pitch_width / 2
+    penalty_spot_y = pitch_length - 11
+    arc_radius = 9.15
+
+    theta = np.linspace(0, 2 * np.pi, 300)
+    arc_x = penalty_spot_x + arc_radius * np.cos(theta)
+    arc_y = penalty_spot_y + arc_radius * np.sin(theta)
+
+    box_line_y = pitch_length - 16.5
+    mask = arc_y < box_line_y
+
+    fig.add_trace(
+        go.Scatter(
+            x=arc_x[mask],
+            y=arc_y[mask],
+            mode="lines",
+            line=dict(color="white", width=2),
+            showlegend=False,
+            hoverinfo="skip"
+        )
+    )
+
+    fig.update_layout(
+        width=420,
+        height=350,
+        template="plotly_dark",
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
+        margin=dict(l=0, r=0, t=40, b=0),
+        showlegend=False,
+        xaxis_title=None,
+        yaxis_title=None,
+        )
+    
+    fig.update_xaxes(showgrid=False, showticklabels=False, zeroline=False, visible=False)
+
+    fig.update_yaxes(
+        showgrid=False,
+        showticklabels=False,
+        zeroline=False,
+        visible=False,
+        scaleanchor="x",
+        scaleratio=1
+    )
+
+    fig.add_shape(
+        type="rect",
+        x0=0,
+        x1=pitch_width,
+        y0=60,
+        y1=pitch_length,
+        line=dict(color="white", width=2)
+    )
+
+
+    return fig
 
 # ---------- Selectors ----------
 st.markdown('<div class="selector-card"><div class="section-title">Choose two players</div><div class="section-caption">Select any two outfield players from the 2025 Premier League dataset.</div>', unsafe_allow_html=True)
@@ -261,7 +401,7 @@ if player1_ctx and player2_ctx:
         unsafe_allow_html=True,
     )
 
-# ---------- KPI table ----------
+# ---------- Stats table & Radar chart ----------
 radar_labels = ["Goals", "Assists", "xG", "xA", "xG/90", "xA/90"]
 label_to_col = {
     "Goals": "goals",
@@ -379,3 +519,52 @@ with col_table:
         st.info("Select two players to compare.")
     st.markdown('</div>', unsafe_allow_html=True)
 
+
+
+shot_time_window = st.radio(
+    "Shot map time period",
+    ["All time", "Last 6 months", "Last 12 months"],
+    horizontal=True
+)
+
+# ---------- Shot maps ----------
+shot_col1, shot_col2 = st.columns([1, 1], gap="large")
+
+with shot_col1:
+    
+    if player1_ctx and player2_ctx:
+        st.markdown(
+        f'<div class="chart-card"><div class="section-title">{player1_ctx["name"]} Shot Map</div></div>',
+        unsafe_allow_html=True
+        )
+
+        fig1 = create_shot_map(player1_ctx["shots"],shot_time_window)
+
+        if fig1 is not None:
+            st.plotly_chart(fig1, use_container_width=True, config={"scrollZoom": False, "displayModeBar": False})
+        else:
+            st.info("No shot data available for this player.")
+    else:
+        st.info("Select Player 1 to view shot map.")
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+with shot_col2:
+    
+
+    if player2_ctx and player1_ctx:
+        st.markdown(
+        f'<div class="chart-card"><div class="section-title">{player2_ctx["name"]} Shot Map</div></div>',
+        unsafe_allow_html=True
+        )
+        fig2 = create_shot_map(player2_ctx["shots"], shot_time_window)
+
+        if fig2 is not None:
+            st.plotly_chart(fig2, use_container_width=False, config={"scrollZoom": False, "displayModeBar": False})
+            
+        else:
+            st.info("No shot data available for this player.")
+    else:
+        st.info("Select Player 2 to view shot map.")
+
+    st.markdown("</div>", unsafe_allow_html=True)

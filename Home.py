@@ -86,7 +86,7 @@ st.markdown(
         }
 
         div[data-testid="stPageLink"] a {
-            background: rgba(180,180,255,0.4);
+            background: rgba(180,180,255,0.9);
             border: 1px solid rgba(159,180,255,0.28);
             border-radius: 14px;
             padding: 0.75rem 1rem;
@@ -147,7 +147,7 @@ with col1:
             </p>
             <span class="pill">xG vs xA</span>
             <span class="pill">Shot quality</span>
-            <span class="pill">Overperformance</span>
+            <span class="pill">Over/Under performance</span>
         </div>
         """,
         unsafe_allow_html=True,
@@ -164,8 +164,8 @@ with col2:
                 and recent goal output for their current team.
             </p>
             <span class="pill">Radar chart</span>
-            <span class="pill">KPI table</span>
-            <span class="pill">Last 5 games</span>
+            <span class="pill">Key stats</span>
+            <span class="pill">Form</span>
         </div>
         """,
         unsafe_allow_html=True,
