@@ -145,11 +145,6 @@ st.markdown(
         html, body, [class*="css"]  {
         color: rgba(255,255,255,0.9) !important;
         }
-
-        p, span, label, div {
-            color: rgba(255,255,255,0.9) !important;
-        }
-    </style>
     """,
     unsafe_allow_html=True,
 )

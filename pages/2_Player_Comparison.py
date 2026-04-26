@@ -124,13 +124,15 @@ st.markdown(
             border: 1px solid rgba(159,180,255,0.28);
             border-radius: 5px;
         }
-
-        html, body, [class*="css"]  {
-        color: rgba(255,255,255,0.9) !important;
+        .stRadio label,
+        .stMultiSelect label,
+        .stSlider label,
+        .stSelectbox label {
+            color: rgba(255,255,255,0.78) !important;
+            font-weight: 650;
         }
-
-        p, span, label, div {
-            color: rgba(255,255,255,0.9) !important;
+        .stRadio div[role="radiogroup"] label p {
+            color: rgba(255,255,255,0.85) !important;
         }
     </style>
     """,
