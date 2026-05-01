@@ -10,16 +10,6 @@ Player, Match and Shots data were collected separately via the Understat API, th
 
 > **Season notice:** The dashboard now shows data for the current **2025/26** season as well as the previous **2024/25** season.
 
-## Preview
-
-<img width="1764" height="783" alt="image" src="https://github.com/user-attachments/assets/1ed32306-be93-4d5d-82a2-4a89238dc62c" />
-<br>
-<img width="1824" height="819" alt="image" src="https://github.com/user-attachments/assets/8dc390c9-3c34-4d5e-ae89-de18a9918357" />
-<br>
-<img width="1784" height="816" alt="image" src="https://github.com/user-attachments/assets/2b37ffee-d797-48d3-b485-4167f914c49f" />
-<br>
-<img width="1799" height="816" alt="image" src="https://github.com/user-attachments/assets/92bcdf13-7700-4010-94d5-1af0bce269b2" />
-
 ## Features
 
 ### League-wide Dashbaord
@@ -47,6 +37,18 @@ Metrics shown:
 - xG per shot: average chance quality per attempt
 - xG diff: Goals − xG (over/under-performance)
 - Goals in last 5: used in comparisons when available (shows “not enough data” if <5 matches)
+  - Constructed using shot data from club's last 5 matches
+
+## Preview
+
+<img width="1764" height="783" alt="image" src="https://github.com/user-attachments/assets/1ed32306-be93-4d5d-82a2-4a89238dc62c" />
+<br>
+<img width="1824" height="819" alt="image" src="https://github.com/user-attachments/assets/8dc390c9-3c34-4d5e-ae89-de18a9918357" />
+<br>
+<img width="1784" height="816" alt="image" src="https://github.com/user-attachments/assets/2b37ffee-d797-48d3-b485-4167f914c49f" />
+<br>
+<img width="1799" height="816" alt="image" src="https://github.com/user-attachments/assets/92bcdf13-7700-4010-94d5-1af0bce269b2" />
+
 
 ## How to run
 
