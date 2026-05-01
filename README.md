@@ -1,8 +1,10 @@
 # Premier League Player Analysis
 
-An interactive Streamlit app for exploring player performance using scatter plots, filters, and a two-player comparison (radar + KPI table). Scatter points are currently colored by position.
+**Live App:** [https://your-app.streamlit.app](https://premstats.streamlit.app/)
 
-This tool and alaysis is very useful for comparing players and discovering undervalued/underperforming players.
+An interactive Streamlit application for analysing Premier League attacking performance using expected metrics and shot/pass data.
+
+The tool is designed to support direct player comparison, league-wide player analysis and to reveal undervalued/overvalued players based on their stats.
 
 Player, Match and Shots data were collected separately via the Understat API, then cleaned and mapped to create a useful dataset.
 
@@ -10,25 +12,32 @@ Player, Match and Shots data were collected separately via the Understat API, th
 
 ## Preview
 
-<img width="600" height="265" alt="Screenshot 2025-08-26 193214" src="https://github.com/user-attachments/assets/94cbdfc6-1cad-4976-814c-0069b00adfe6" />  
-<br>
+<img width="1764" height="783" alt="image" src="https://github.com/user-attachments/assets/1ed32306-be93-4d5d-82a2-4a89238dc62c" />
 
-<img width="600" height="265" alt="Screenshot 2025-08-26 193258" src="https://github.com/user-attachments/assets/658e962a-8eb5-4947-beef-0fcb061933f8" />
-<br>
+<img width="1824" height="819" alt="image" src="https://github.com/user-attachments/assets/8dc390c9-3c34-4d5e-ae89-de18a9918357" />
 
-<img width="600" height="265" alt="Screenshot 2025-08-26 203541" src="https://github.com/user-attachments/assets/9873268e-75c5-4212-875d-3c29ac0308d4" />
+<img width="1784" height="816" alt="image" src="https://github.com/user-attachments/assets/2b37ffee-d797-48d3-b485-4167f914c49f" />
 
+<img width="1799" height="816" alt="image" src="https://github.com/user-attachments/assets/92bcdf13-7700-4010-94d5-1af0bce269b2" />
 
 ## Features
-- **Filters:** minutes threshold, position, team, player search (typeahead). To narrow search down for player selection.
-- **Two key scatters:**
-  - Shooting Data: `xG/shot` vs `Shots/90`. Measures quality of shots vs quantity of shots. Top right is players who shoot a lot and shoot from good positions.
-  - Expected Goal Involvements: `xA/90` vs `xG/90`. Measures goalscoring and assisting chances. Top right is players who are most likely to have high goals and assists.
-- **Color by position** (Forward / Midfielder / Defender / Goalkeeper).
-- **Player vs Player** comparison:
-  - **Radar** (league min–max normalized to a 0–5 scale)
-  - **KPI table** comparing goals, assists, xG, xA, goals last 5 games, minutes played, xG/90, xA/90.
-- **Dark theme** and responsive layout.
+
+### League-wide Dashbaord
+
+Interactive scatter plots to explore league-wide trends
+Key views include:
+- **Shot Quality vs Shot Volume** (xG/shot vs Shots/90). Top right is players who shoot a lot and shoot from good positions.
+- **Chance Creation vs Goal Threat** (xA/90 vs xG/90). Top right is players who are most likely to have high goals and assists.
+- All scatters are coloured by position (DEF, MID, FWD)
+Filters: Minutes played, Position, Team
+
+### Player Comparison
+
+Page to compare any two players head to head.
+Key views include:
+- **Radar Plot** - Both player's profiles are plotted on the radar axis to compare their profiles. Scores are normalized as league-wide percetiles to offer a fair comparison.
+- **Key Stats** - Key stats such as goals and assists are displayed side by side for each player.
+- **Shot Maps** - View showing every shot from a player built from shot event data. Markers are sized by xG.
 
 ## Data
 - Source: **Understat** via `understatapi`.
