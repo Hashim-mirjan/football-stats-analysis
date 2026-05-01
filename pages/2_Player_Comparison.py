@@ -24,7 +24,7 @@ st.markdown(
         }
 
         [data-testid="stSidebar"] {
-            background-color: rgba(20, 22, 27, 0.78);
+            background-color: rgba(120,160,230, 0.8);
             border-right: 1px solid rgba(255,255,255,0.08);
         }
 
@@ -242,12 +242,12 @@ def player_kpi(ctx: dict) -> pd.DataFrame:
     stats = ctx["stats"]
     last5 = ctx["last5"]
     return pd.DataFrame({
-        "Goals": [stats["goals"].values[0]],
-        "Assists": [stats["assists"].values[0]],
+        "Goals": [int(stats["goals"].values[0])],
+        "Assists": [int(stats["assists"].values[0])],
         "xG": [round(stats["xG"].values[0], 2)],
         "xA": [round(stats["xA"].values[0], 2)],
         "Goals Last 5 Games (Current Team)": ["N/A" if pd.isna(last5) else int(last5)],
-        "Minutes Played": [stats["time"].values[0]],
+        "Minutes Played": [int(stats["time"].values[0])],
         "xG/90": [round(stats["xG_per90"].values[0], 2)],
         "xA/90": [round(stats["xA_per90"].values[0], 2)],
     })
@@ -472,6 +472,7 @@ with col_radar:
 
 with col_table:
     st.markdown('<div class="chart-card"><div class="section-title">Key Stats</div></div>',unsafe_allow_html=True)
+    st.markdown("<div style='height: 2.5rem;'></div>", unsafe_allow_html=True)
     if player1_ctx and player2_ctx:
         player1_kpi = player_kpi(player1_ctx)
         player2_kpi = player_kpi(player2_ctx)
@@ -481,42 +482,119 @@ with col_table:
         p2_name = player2_ctx["name"] if player2_ctx["name"] != p1_name else f"{player2_ctx['name']} (2)"
         comparison_df.index = [p1_name, p2_name]
 
-        tbl = comparison_df.T.reset_index().rename(columns={"index": "Stat"})
+        tbl = comparison_df.T.reset_index().rename(columns={"index": "Metric"})
 
-        fig = go.Figure(data=[go.Table(
-            columnwidth=[1.4, 1, 1],
+        tbl = tbl[[p1_name, "Metric", p2_name]]
 
-            header=dict(
-                values=[
-                    "<b>Metric</b>",
-                    f"<b>{p1_name}</b>",
-                    f"<b>{p2_name}</b>",
-                ],
-                fill_color="rgba(255,255,255,0.06)",
-                font=dict(color="white", size=17),
-                align=["left", "center", "center"],
-                height=46,
-                line=dict(width=0)
-            ),
+        int_metrics = [
+            "Goals",
+            "Assists",
+            "Goals Last 5 Games (Current Team)",
+            "Minutes Played",
+        ]
 
-            cells=dict(
-                values=[tbl[c] for c in tbl.columns],
-                fill_color=[
-                    ["rgba(255,255,255,0.06)" if i % 2 == 0 else "rgba(255,255,255,0.02)" for i in range(len(tbl))],
-                    ["rgba(255,255,255,0.02)"] * len(tbl),
-                    ["rgba(255,255,255,0.02)"] * len(tbl),
-                ],
-                font=dict(color="rgba(255,255,255,0.76)", size=14),
-                align=["left", "center", "center"],
-                height=46,
-                line=dict(width=0)
-            ),
-        )])
+        # Player 1 column
+        tbl[p1_name] = [
+            str(int(v)) if m in int_metrics else f"{float(v):.2f}"
+            for m, v in zip(tbl["Metric"], tbl[p1_name])
+        ]
 
-        fig.update_layout(paper_bgcolor="rgba(0,0,0,0)",margin=dict(l=0, r=0, t=4, b=0),height=520)
-        fig.data[0].cells.line.color = "rgba(255,255,255,0.11)"
-        fig.data[0].header.line.color = "rgba(255,255,255,0.18)"
-        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+        # Player 2 column
+        tbl[p2_name] = [
+            str(int(v)) if m in int_metrics else f"{float(v):.2f}"
+            for m, v in zip(tbl["Metric"], tbl[p2_name])
+        ]
+
+        # fig = go.Figure(data=[go.Table(
+        #     columnwidth=[1, 1.3, 1],
+
+        #     header=dict(
+        #         values=[
+        #             f"{p1_name}",
+        #             "",
+        #             f"{p2_name}",
+        #         ],
+        #         fill_color="rgba(0,0,0,0)",   # no header background
+        #         font=dict(color="white", size=15),
+        #         align=["center", "center", "center"],
+        #         height=40,
+        #         line=dict(width=0)
+        #     ),
+
+        #     cells=dict(
+        #         values=[tbl[c] for c in tbl.columns],
+        #         fill_color="rgba(0,0,0,0)",
+        #         font=dict(
+        #             color=[
+        #                 "rgba(255,255,255,0.90)",
+        #                 "rgba(255,255,255,0.55)",
+        #                 "rgba(255,255,255,0.90)",
+        #             ],
+        #             size=[16, 13, 16]
+        #         ),
+        #         align=["center", "center", "center"],
+        #         height=52,
+        #         line=dict(width=0)
+        #     ),
+        # )])
+
+        # fig.update_layout(
+        #     paper_bgcolor="rgba(0,0,0,0)",
+        #     plot_bgcolor="rgba(0,0,0,0)",
+        #     margin=dict(l=0, r=0, t=0, b=0),
+        #     height=500
+        # )
+
+        # st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
+
+        rows_html = ""
+
+        for _, row in tbl.iterrows():
+            rows_html += f"""
+            <div style="
+                display:grid;
+                grid-template-columns: 1fr 1.25fr 1fr;
+                align-items:center;
+                padding: 0.65rem 0;
+                border-bottom: 1px solid rgba(255,255,255,0.18);
+            ">
+                <div style="text-align:center; color:rgba(255,255,255,0.92); font-size:1.18rem; font-weight:800;">
+                    {row[p1_name]}
+                </div>
+                <div style="text-align:center; color:rgba(255,255,255,0.48); font-size:0.82rem; font-weight:800; letter-spacing:0.08em; text-transform:uppercase;">
+                    {row["Metric"]}
+                </div>
+                <div style="text-align:center; color:rgba(255,255,255,0.92); font-size:1.18rem; font-weight:800;">
+                    {row[p2_name]}
+                </div>
+            </div>
+            """
+
+        st.markdown(
+            f"""
+            <div style="padding: 0.7rem 0.2rem 0.2rem 0.2rem;">
+                <div style="
+                    display:grid;
+                    grid-template-columns: 1fr 1.25fr 1fr;
+                    align-items:center;
+                    margin-bottom:0.75rem;
+                ">
+                    <div style="text-align:center; color:rgba(255,255,255,0.92); font-size:1rem; font-weight:850;">
+                        {p1_name}
+                    </div>
+                    <div></div>
+                    <div style="text-align:center; color:rgba(255,255,255,0.92); font-size:1rem; font-weight:850;">
+                        {p2_name}
+                    </div>
+                </div>
+
+                {rows_html}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
     else:
         st.info("Select two players to compare.")
     st.markdown('</div>', unsafe_allow_html=True)
@@ -525,7 +603,7 @@ with col_table:
 
 shot_time_window = st.radio(
     "Shot map time period",
-    ["All time", "Last 6 months", "Last 12 months"],
+    ["Last 6 months", "Last 12 months", "All time"],
     horizontal=True
 )
 
@@ -562,7 +640,7 @@ with shot_col2:
         fig2 = create_shot_map(player2_ctx["shots"], shot_time_window)
 
         if fig2 is not None:
-            st.plotly_chart(fig2, use_container_width=False, config={"scrollZoom": False, "displayModeBar": False})
+            st.plotly_chart(fig2, use_container_width=True, config={"scrollZoom": False, "displayModeBar": False})
             
         else:
             st.info("No shot data available for this player.")
