@@ -244,12 +244,14 @@ def player_kpi(ctx: dict) -> pd.DataFrame:
     return pd.DataFrame({
         "Goals": [int(stats["goals"].values[0])],
         "Assists": [int(stats["assists"].values[0])],
+        "Goals (non-penalty)": [int(stats["npg"].values[0])],
         "xG": [round(stats["xG"].values[0], 2)],
         "xA": [round(stats["xA"].values[0], 2)],
         "Goals Last 5 Games (Current Team)": ["N/A" if pd.isna(last5) else int(last5)],
         "Minutes Played": [int(stats["time"].values[0])],
         "xG/90": [round(stats["xG_per90"].values[0], 2)],
         "xA/90": [round(stats["xA_per90"].values[0], 2)],
+        "KP/90": [round(stats["KP_per90"].values[0], 2)]
     })
 
 
@@ -270,6 +272,9 @@ def create_shot_map(shots: pd.DataFrame, time_window: str = "All time"):
     elif time_window == "Last 12 months":
         cutoff_date = pd.Timestamp.today() - pd.DateOffset(months=12)
         shots = shots[shots["date"] >= cutoff_date].copy()
+    
+    if shot_type == "Open play":
+        shots = shots[shots["situation"] == "OpenPlay"].copy()
 
     if shots.empty:
         return None
@@ -290,7 +295,7 @@ def create_shot_map(shots: pd.DataFrame, time_window: str = "All time"):
         y="x",
         size="xG",
         size_max=10,
-        hover_data=["xG", "shotType", "id", "minute", "date"],
+        hover_data=["xG", "shotType", "minute", "date"],
         title=f"{shotsmap['player'].iloc[0]} Shot Map"
     )
 
@@ -408,10 +413,12 @@ radar_labels = ["Goals", "Assists", "xG", "xA", "xG/90", "xA/90"]
 label_to_col = {
     "Goals": "goals",
     "Assists": "assists",
+    "Goals (non-penalty)": "npg",
     "xG": "xG",
     "xA": "xA",
     "xG/90": "xG_per90",
     "xA/90": "xA_per90",
+    "KP/90": "KP_per90",
 }
 
 mins = pd.Series({lbl: pd.to_numeric(leaguedata[label_to_col[lbl]], errors="coerce").min() for lbl in radar_labels})
@@ -489,8 +496,9 @@ with col_table:
         int_metrics = [
             "Goals",
             "Assists",
+            "Goals (non-penalty)",
             "Goals Last 5 Games (Current Team)",
-            "Minutes Played",
+            "Minutes Played"
         ]
 
         # Player 1 column
@@ -604,6 +612,12 @@ with col_table:
 shot_time_window = st.radio(
     "Shot map time period",
     ["Last 6 months", "Last 12 months", "All time"],
+    horizontal=True
+)
+
+shot_type = st.radio(
+    "Shot type",
+    ["All shots", "Open play"],
     horizontal=True
 )
 

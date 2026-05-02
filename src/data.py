@@ -26,13 +26,14 @@ def fetch_data(season):
     leaguedata["xA"] = pd.to_numeric(leaguedata["xA"], errors="coerce")
 
     nineties = (leaguedata["time"] / 90).replace(0, np.nan)
-    leaguedata["shots_per90"]   = leaguedata["shots"].div(nineties)
-    leaguedata["xG_per_shot"]   = leaguedata["xG"].div(leaguedata["shots"]).replace([np.inf, -np.inf], np.nan)
-    leaguedata["xG_per90"]      = leaguedata["xG"].div(nineties)
-    leaguedata["xA_per90"]      = leaguedata["xA"].div(nineties)
-    leaguedata["goals_per90"]   = leaguedata["goals"].div(nineties)
+    leaguedata["shots_per90"] = leaguedata["shots"].div(nineties)
+    leaguedata["xG_per_shot"] = leaguedata["xG"].div(leaguedata["shots"]).replace([np.inf, -np.inf], np.nan)
+    leaguedata["xG_per90"] = leaguedata["xG"].div(nineties)
+    leaguedata["xA_per90"] = leaguedata["xA"].div(nineties)
+    leaguedata["goals_per90"] = leaguedata["goals"].div(nineties)
     leaguedata["assists_per90"] = leaguedata["assists"].div(nineties)
-    leaguedata["xG_diff"]       = leaguedata["goals"] - leaguedata["xG"]
+    leaguedata["KP_per90"] = leaguedata["key_passes"].div(nineties)
+    leaguedata["xG_diff"] = leaguedata["goals"] - leaguedata["xG"]
 
     leaguedata["last_name"] = leaguedata["player_name"].str.split().str[-1] 
     leaguedata["current_team"] = leaguedata["team_title"].str.split(",").str[0].str.strip()
