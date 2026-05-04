@@ -23,7 +23,7 @@ st.markdown(
         }
 
         [data-testid="stSidebar"] {
-            background-color: rgba(20, 22, 27, 0.78);
+            background-color: rgba(120,160,230, 0.8);
             border-right: 1px solid rgba(255,255,255,0.08);
         }
 

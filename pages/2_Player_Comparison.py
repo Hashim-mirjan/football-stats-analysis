@@ -172,6 +172,7 @@ st.markdown(
 # ---------- Helpers ----------
 def goals_last_5(player_shots: pd.DataFrame, team_matches: pd.DataFrame) -> float:
     tm = team_matches.copy()
+
     if not {"id", "date"}.issubset(tm.columns):
         raise ValueError("team_matches must have columns: 'id' and 'date'")
 
@@ -185,14 +186,16 @@ def goals_last_5(player_shots: pd.DataFrame, team_matches: pd.DataFrame) -> floa
         .head(5)["id"]
         .tolist()
     )
-
+    
     if len(last5_ids) < 5:
         return np.nan
+    else:
+        last5_ids = pd.DataFrame(last5_ids, columns=["match_id"])
 
     ps = player_shots.copy()
     if "date" not in ps:
         raise ValueError("Expected a 'date' column in player_shots")
-
+    
     ps["date"] = pd.to_datetime(ps["date"], errors="coerce")
 
     if "is_goal" not in ps:
@@ -207,10 +210,14 @@ def goals_last_5(player_shots: pd.DataFrame, team_matches: pd.DataFrame) -> floa
     per_match = (
         ps.groupby("match_id")
         .agg(goals=("is_goal", "sum"), match_date=("date", "max"))
+        .reset_index()
         .sort_values("match_date")
     )
 
-    return int(per_match["goals"].reindex(last5_ids).fillna(0).sum())
+    last5 = last5_ids.merge(per_match)
+
+    return int(sum(last5["goals"])) if not last5.empty else np.nan
+
 
 
 def build_player_context(player_name: str):
@@ -296,7 +303,6 @@ def create_shot_map(shots: pd.DataFrame, time_window: str = "All time"):
         size="xG",
         size_max=10,
         hover_data=["xG", "shotType", "minute", "date"],
-        title=f"{shotsmap['player'].iloc[0]} Shot Map"
     )
 
     fig.update_xaxes(range=[0, 60])
@@ -479,7 +485,7 @@ with col_radar:
 
 with col_table:
     st.markdown('<div class="chart-card"><div class="section-title">Key Stats</div></div>',unsafe_allow_html=True)
-    st.markdown("<div style='height: 2.5rem;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='height: 2.0rem;'></div>", unsafe_allow_html=True)
     if player1_ctx and player2_ctx:
         player1_kpi = player_kpi(player1_ctx)
         player2_kpi = player_kpi(player2_ctx)
@@ -609,17 +615,24 @@ with col_table:
 
 
 
-shot_time_window = st.radio(
-    "Shot map time period",
-    ["Last 6 months", "Last 12 months", "All time"],
-    horizontal=True
-)
+radio_col1, radio_col2, radio_col3 = st.columns([3, 2, 3], gap="large")
 
-shot_type = st.radio(
-    "Shot type",
-    ["All shots", "Open play"],
-    horizontal=True
-)
+with radio_col1:
+    st.markdown("<div style='height: 0.8rem;'></div>", unsafe_allow_html=True)
+    shot_time_window = st.radio(
+        "Shot map time period",
+        ["Last 6 months", "Last 12 months", "All time"],
+        horizontal=True
+    )
+
+with radio_col2:
+    st.markdown("<div style='height: 0.8rem;'></div>", unsafe_allow_html=True)
+    shot_type = st.radio(
+        "Shot type",
+        ["All shots", "Open play"],
+        horizontal=True
+    )
+
 
 # ---------- Shot maps ----------
 shot_col1, shot_col2 = st.columns([1, 1], gap="large")
@@ -628,7 +641,7 @@ with shot_col1:
     
     if player1_ctx and player2_ctx:
         st.markdown(
-        f'<div class="chart-card"><div class="section-title">{player1_ctx["name"]} Shot Map</div></div>',
+        f'<div class="chart-card"><div class="section-title">{player1_ctx["name"]} Shot Map',
         unsafe_allow_html=True
         )
 
