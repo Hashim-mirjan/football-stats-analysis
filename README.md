@@ -2,7 +2,7 @@
 
 **Live App:** [https://your-app.streamlit.app](https://premstats.streamlit.app/)
 
-An interactive Streamlit application for analysing Premier League attacking performance using expected metrics and shot/pass data.
+An interactive Streamlit application for analysing Premier League players' attacking performance using expected metrics and shot/pass data.
 
 The tool is designed to support direct player comparison, league-wide player analysis and to reveal undervalued/overvalued players based on their stats.
 
