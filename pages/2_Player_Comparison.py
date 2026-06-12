@@ -507,17 +507,32 @@ with col_table:
             "Minutes Played"
         ]
 
-        # Player 1 column
+        def format_metric_value(metric, value):
+            # Handle missing values
+            if pd.isna(value) or value == "N/A":
+                return "N/A"
+
+            try:
+                if metric in int_metrics:
+                    return str(int(float(value)))
+                else:
+                    return f"{float(value):.2f}"
+            except (ValueError, TypeError):
+                return "N/A"
+
+
+        # Format Player 1 column
         tbl[p1_name] = [
-            str(int(v)) if m in int_metrics else f"{float(v):.2f}"
+            format_metric_value(m, v)
             for m, v in zip(tbl["Metric"], tbl[p1_name])
         ]
 
-        # Player 2 column
+        # Format Player 2 column
         tbl[p2_name] = [
-            str(int(v)) if m in int_metrics else f"{float(v):.2f}"
+            format_metric_value(m, v)
             for m, v in zip(tbl["Metric"], tbl[p2_name])
         ]
+
 
         # fig = go.Figure(data=[go.Table(
         #     columnwidth=[1, 1.3, 1],
@@ -641,7 +656,7 @@ with shot_col1:
     
     if player1_ctx and player2_ctx:
         st.markdown(
-        f'<div class="chart-card"><div class="section-title">{player1_ctx["name"]} Shot Map',
+        f'<div class="chart-card"><div class="section-title">{player1_ctx["name"]} Shot Map</div></div>',
         unsafe_allow_html=True
         )
 
